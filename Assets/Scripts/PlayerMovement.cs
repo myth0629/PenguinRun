@@ -1,273 +1,208 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Auto Run")]
-    [SerializeField] private float runSpeed = 6.5f;
-    [SerializeField] private bool movePlayerForward = false;
+    [Header("References")]
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Animator animator;
+    [SerializeField] private Collider2D bodyCollider;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 12f;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.15f;
 
-    [Header("Slash")]
-    [SerializeField] private float slashRange = 1.2f;
-    [SerializeField] private float slashRadius = 0.6f;
-    [SerializeField] private LayerMask slashTargets;
+    [Header("Slide")]
+    [SerializeField] private float slideColliderHeight = 0.5f;
+    [SerializeField] private Vector2 slideColliderOffset = new Vector2(0f, -0.25f);
 
-    [Header("Parry")]
-    [SerializeField] private float parryRange = 1.1f;
-    [SerializeField] private float parryRadius = 0.7f;
-    [SerializeField] private LayerMask parryTargets;
-    [SerializeField] private float hitStopSeconds = 0.1f;
-    [SerializeField] private float reflectSpeed = 12f;
-    [SerializeField] private float perfectShockwaveRadius = 6f;
-    [SerializeField] private LayerMask shockwaveTargets;
+    [Header("Fall")]
+    [SerializeField] private float fallVelocityThreshold = -0.1f;
 
-    [Header("Rhythm")]
-    [SerializeField] private float bpm = 120f;
-    [SerializeField] private float beatWindowSeconds = 0.12f;
-    [SerializeField] private float perfectWindowSeconds = 0.05f;
+    [Header("Input (New Input System)")]
+    [SerializeField] private InputActionReference jumpAction;
+    [SerializeField] private InputActionReference slideAction;
 
-    [Header("Camera")]
-    [SerializeField] private Camera targetCamera;
-    [SerializeField] private float comboZoomPerStack = 0.03f;
-    [SerializeField] private float minOrthoSize = 4.5f;
-
-    [Header("Input")]
-    [SerializeField] private KeyCode slashKey = KeyCode.J;
-    [SerializeField] private KeyCode parryKey = KeyCode.K;
-    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
-
-    [Header("Score")]
-    [SerializeField] private int scorePerSlash = 100;
-    [SerializeField] private int scorePerParry = 250;
-    [SerializeField] private int scorePerPerfectParry = 600;
-
-    public float RunSpeed => GameSpeedController.Speed > 0f ? GameSpeedController.Speed : runSpeed;
-
-    private Rigidbody2D rb;
-    private Animator anim;
-    private float songStartTime;
-    private float baseOrthoSize;
-    private int combo;
-    private int score;
+    private float defaultColliderHeight;
+    private Vector2 defaultColliderOffset;
     private bool isGrounded;
+    private bool isSliding;
+    private bool isFalling;
+
+    private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
+    private static readonly int AnimIsSliding = Animator.StringToHash("isSliding");
+    private static readonly int AnimIsFalling = Animator.StringToHash("isFalling");
+    private static readonly int AnimJump = Animator.StringToHash("jump");
+    private static readonly int AnimSlide = Animator.StringToHash("slide");
+
+    private void Reset()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        bodyCollider = GetComponent<Collider2D>();
+    }
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        if (targetCamera == null)
+        if (rb == null)
         {
-            targetCamera = Camera.main;
+            rb = GetComponent<Rigidbody2D>();
         }
-        if (targetCamera != null && targetCamera.orthographic)
+
+        if (animator == null)
         {
-            baseOrthoSize = targetCamera.orthographicSize;
+            animator = GetComponent<Animator>();
         }
-        else
+
+        if (bodyCollider == null)
         {
-            baseOrthoSize = 5f;
+            bodyCollider = GetComponent<Collider2D>();
         }
+
+        CacheDefaultCollider();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        songStartTime = Time.time;
+        jumpAction?.action.Enable();
+        slideAction?.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        jumpAction?.action.Disable();
+        slideAction?.action.Disable();
     }
 
     private void Update()
     {
+        bool jumpPressed = jumpAction != null && jumpAction.action.WasPerformedThisFrame();
+        bool slidePressed = slideAction != null && slideAction.action.WasPerformedThisFrame();
+        bool slideHeld = slideAction != null && slideAction.action.IsPressed();
+
         UpdateGrounded();
-        HandleInput();
-        UpdateCameraZoom();
+        HandleJumpInput(jumpPressed);
+        HandleSlideInput(slidePressed, slideHeld);
+        UpdateFalling();
+        UpdateAnimator();
     }
 
-    private void FixedUpdate()
+    private void HandleJumpInput(bool jumpPressed)
     {
-        float targetX = movePlayerForward ? RunSpeed : 0f;
-        rb.linearVelocity = new Vector2(targetX, rb.linearVelocity.y);
-    }
-
-    private void HandleInput()
-    {
-        if (Input.GetKeyDown(jumpKey) || Input.GetButtonDown("Jump"))
+        if (isSliding)
         {
-            TryJump();
+            return;
         }
 
-        if (Input.GetKeyDown(slashKey) || Input.GetButtonDown("Fire1"))
+        if (isGrounded && jumpPressed)
         {
-            TrySlash();
-        }
-
-        if (Input.GetKeyDown(parryKey) || Input.GetButtonDown("Fire2"))
-        {
-            TryParry();
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            animator.SetTrigger(AnimJump);
         }
     }
 
-    private void TryJump()
+    private void HandleSlideInput(bool slidePressed, bool slideHeld)
     {
         if (!isGrounded)
         {
             return;
         }
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        anim.SetTrigger("Jump");
-        Debug.Log("Jump!");
-    }
 
-    private void TrySlash()
-    {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(GetSlashCenter(), slashRadius, slashTargets);
-        if (hits.Length == 0)
+        if (!isSliding && slidePressed)
         {
-            ResetCombo();
-            return;
+            StartSlide();
         }
 
-        bool hitSomething = false;
-        foreach (Collider2D hit in hits)
+        if (isSliding && !slideHeld)
         {
-            hitSomething = true;
-            hit.SendMessage("OnSlashHit", SendMessageOptions.DontRequireReceiver);
-        }
-
-        if (hitSomething)
-        {
-            combo++;
-            score += scorePerSlash;
+            EndSlide();
         }
     }
 
-    private void TryParry()
+    private void StartSlide()
     {
-        float beatInterval = 60f / Mathf.Max(1f, bpm);
-        float phase = (Time.time - songStartTime) % beatInterval;
-        float distanceToBeat = Mathf.Min(phase, beatInterval - phase);
-        bool onBeat = distanceToBeat <= beatWindowSeconds;
-        bool perfect = distanceToBeat <= perfectWindowSeconds;
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(GetParryCenter(), parryRadius, parryTargets);
-        if (hits.Length == 0)
-        {
-            ResetCombo();
-            return;
-        }
-
-        if (!onBeat)
-        {
-            ResetCombo();
-            return;
-        }
-
-        foreach (Collider2D hit in hits)
-        {
-            hit.SendMessage("OnParry", SendMessageOptions.DontRequireReceiver);
-            ReflectProjectile(hit);
-        }
-
-        combo++;
-        score += perfect ? scorePerPerfectParry : scorePerParry;
-        StartCoroutine(HitStop());
-
-        if (perfect)
-        {
-            Shockwave();
-        }
+        isSliding = true;
+        ApplySlideCollider();
+        animator.SetTrigger(AnimSlide);
     }
 
-    private void ReflectProjectile(Collider2D hit)
+    private void EndSlide()
     {
-        Rigidbody2D hitRb = hit.attachedRigidbody;
-        if (hitRb == null)
-        {
-            return;
-        }
-
-        Vector2 reflectDir = Vector2.right;
-        hitRb.linearVelocity = reflectDir * reflectSpeed;
-    }
-
-    private IEnumerator HitStop()
-    {
-        float originalTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(hitStopSeconds);
-        Time.timeScale = originalTimeScale;
-    }
-
-    private void Shockwave()
-    {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, perfectShockwaveRadius, shockwaveTargets);
-        foreach (Collider2D hit in hits)
-        {
-            hit.SendMessage("OnPerfectParryShockwave", SendMessageOptions.DontRequireReceiver);
-        }
-    }
-
-    private void ResetCombo()
-    {
-        combo = 0;
+        isSliding = false;
+        RestoreDefaultCollider();
     }
 
     private void UpdateGrounded()
     {
         if (groundCheck == null)
         {
-            isGrounded = rb.linearVelocity.y == 0f;
-            UpdateAnimatorGrounded();
+            isGrounded = bodyCollider != null && bodyCollider.IsTouchingLayers(groundLayer);
             return;
         }
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer) != null;
-        UpdateAnimatorGrounded();
+
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
     }
 
-    private void UpdateAnimatorGrounded()
+    private void UpdateAnimator()
     {
-        if (anim == null)
+        if (animator == null)
         {
             return;
         }
 
-        anim.SetBool("IsGrounded", isGrounded);
+        animator.SetBool(AnimIsGrounded, isGrounded);
+        animator.SetBool(AnimIsSliding, isSliding);
+        animator.SetBool(AnimIsFalling, isFalling);
     }
 
-    private void UpdateCameraZoom()
+    private void UpdateFalling()
     {
-        if (targetCamera == null || !targetCamera.orthographic)
+        if (rb == null)
         {
+            isFalling = false;
             return;
         }
 
-        float targetSize = Mathf.Max(minOrthoSize, baseOrthoSize - combo * comboZoomPerStack);
-        targetCamera.orthographicSize = Mathf.Lerp(targetCamera.orthographicSize, targetSize, Time.deltaTime * 6f);
+        isFalling = !isGrounded && rb.linearVelocity.y < fallVelocityThreshold;
     }
 
-    private Vector2 GetSlashCenter()
+    private void CacheDefaultCollider()
     {
-        return (Vector2)transform.position + Vector2.right * slashRange;
+        if (bodyCollider is CapsuleCollider2D capsule)
+        {
+            defaultColliderHeight = capsule.size.y;
+            defaultColliderOffset = capsule.offset;
+        }
+        else if (bodyCollider is BoxCollider2D box)
+        {
+            defaultColliderHeight = box.size.y;
+            defaultColliderOffset = box.offset;
+        }
     }
 
-    private Vector2 GetParryCenter()
+    private void ApplySlideCollider()
     {
-        return (Vector2)transform.position + Vector2.right * parryRange;
+        if (bodyCollider is CapsuleCollider2D capsule)
+        {
+            capsule.size = new Vector2(capsule.size.x, slideColliderHeight);
+            capsule.offset = slideColliderOffset;
+        }
     }
 
-    private void OnDrawGizmosSelected()
+    private void RestoreDefaultCollider()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(GetSlashCenter(), slashRadius);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(GetParryCenter(), parryRadius);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, perfectShockwaveRadius);
+        if (bodyCollider is CapsuleCollider2D capsule)
+        {
+            capsule.size = new Vector2(capsule.size.x, defaultColliderHeight);
+            capsule.offset = defaultColliderOffset;
+        }
+        else if (bodyCollider is BoxCollider2D box)
+        {
+            box.size = new Vector2(box.size.x, defaultColliderHeight);
+            box.offset = defaultColliderOffset;
+        }
     }
 }
