@@ -14,6 +14,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.15f;
 
+    [Header("Variable Jump (가변 점프)")]
+    [Tooltip("버튼을 떼면 상승 속도가 이 비율로 감소 (0.5 = 절반으로 줄임)")]
+    [SerializeField, Range(0.1f, 1f)] private float jumpCutMultiplier = 0.4f;
+    
+    [Tooltip("점프 컷이 적용되는 최소 상승 속도")]
+    [SerializeField] private float minJumpCutVelocity = 0.1f;
+
     [Header("Slide")]
     [SerializeField] private float slideColliderHeight = 0.5f;
     [SerializeField] private Vector2 slideColliderOffset = new Vector2(0f, -0.25f);
@@ -30,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     private bool isSliding;
     private bool isFalling;
+    private bool isJumping;
+    private bool jumpReleased;
 
     private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
     private static readonly int AnimIsSliding = Animator.StringToHash("isSliding");
@@ -79,28 +88,51 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         bool jumpPressed = jumpAction != null && jumpAction.action.WasPerformedThisFrame();
+        bool jumpHeld = jumpAction != null && jumpAction.action.IsPressed();
         bool slidePressed = slideAction != null && slideAction.action.WasPerformedThisFrame();
         bool slideHeld = slideAction != null && slideAction.action.IsPressed();
 
         UpdateGrounded();
-        HandleJumpInput(jumpPressed);
+        HandleJumpInput(jumpPressed, jumpHeld);
         HandleSlideInput(slidePressed, slideHeld);
         UpdateFalling();
         UpdateAnimator();
     }
 
-    private void HandleJumpInput(bool jumpPressed)
+    private void HandleJumpInput(bool jumpPressed, bool jumpHeld)
     {
         if (isSliding)
         {
             return;
         }
 
+        // 점프 시작
         if (isGrounded && jumpPressed)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             animator.SetTrigger(AnimJump);
+            isJumping = true;
+            jumpReleased = false;
+        }
+
+        // 점프 중 버튼을 떼면 상승 속도 감소 (가변 점프)
+        if (isJumping && !jumpHeld && !jumpReleased)
+        {
+            jumpReleased = true;
+            
+            // 아직 상승 중이면 속도 감소
+            if (rb.linearVelocity.y > minJumpCutVelocity)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+            }
+        }
+
+        // 착지하면 점프 상태 리셋
+        if (isGrounded && rb.linearVelocity.y <= 0f)
+        {
+            isJumping = false;
+            jumpReleased = false;
         }
     }
 

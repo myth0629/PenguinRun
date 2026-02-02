@@ -583,7 +583,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &622752112
 Transform:
   m_ObjectHideFlags: 0
@@ -1521,7 +1521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d3dc52a78f18a4eb3d5f9244928d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSpeedController
-  defaultSpeed: 6.5
+  defaultSpeed: 6
 --- !u!4 &938585018
 Transform:
   m_ObjectHideFlags: 0
@@ -1672,23 +1672,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591426c796f0dd44095831c0a4494eea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScrollingTileFloor
-  scrollSpeed: 6.5
+  baseScrollSpeed: 6.5
   speedMultiplier: 1
-  tileWidth: 36
-  tiles:
-  - {fileID: 1342438659}
-  patterns:
-  - {fileID: 8064049049256183503, guid: 060fdf057198e4b48a8aac7f0d831b7e, type: 3}
-  - {fileID: 8264257362174365563, guid: 4907925696256a3468b871dce320724c, type: 3}
-  patternParent: {fileID: 1342438659}
-  patternOffset: {x: 0, y: 0, z: 0}
-  spawnOnStart: 1
-  avoidRepeat: 1
-  attachPatternToTile: 1
-  disableTileRenderers: 1
-  disableTileColliders: 1
-  snapPatternToTileLeftEdge: 1
-  tileStartOffset: 0
+  chunkPatterns:
+  - prefab: {fileID: 8064049049256183503, guid: 060fdf057198e4b48a8aac7f0d831b7e, type: 3}
+    weight: 0
+    minDifficultyLevel: 0
+    description: 
+  - prefab: {fileID: 8264257362174365563, guid: 4907925696256a3468b871dce320724c, type: 3}
+    weight: 0
+    minDifficultyLevel: 0
+    description: 
+  chunkWidth: 36
+  activeChunkCount: 3
+  spawnY: 0
+  recycleOffset: 2
+  preventRepeat: 1
+  repeatPreventCount: 2
+  enableDifficultyScaling: 0
+  difficultyInterval: 30
+  showDebugGizmos: 0
 --- !u!1 &1360332893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1792,6 +1795,7 @@ GameObject:
   - component: {fileID: 1507545730}
   - component: {fileID: 1507545729}
   - component: {fileID: 1507545728}
+  - component: {fileID: 1507545731}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1890,7 +1894,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1901,7 +1905,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 5
 --- !u!114 &1507545730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1917,17 +1921,40 @@ MonoBehaviour:
   rb: {fileID: 1507545729}
   animator: {fileID: 1507545726}
   bodyCollider: {fileID: 1507545728}
-  jumpForce: 12
+  jumpForce: 15
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   groundCheck: {fileID: 376578697}
-  groundCheckRadius: 0.15
+  groundCheckRadius: 0.2
+  jumpCutMultiplier: 0.4
+  minJumpCutVelocity: 0.1
   slideColliderHeight: 0.5
   slideColliderOffset: {x: 0, y: -0.25}
   fallVelocityThreshold: -0.1
   jumpAction: {fileID: 884423241}
   slideAction: {fileID: 276762157}
+--- !u!114 &1507545731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507545725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75627f7c0123654e8d8a69bf2ddbb98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 3
+  currentHealth: 0
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  invincibilityDuration: 1.5
+  blinkInterval: 0.1
+  spriteRenderer: {fileID: 0}
+  bodyCollider: {fileID: 1507545728}
 --- !u!1 &1761240981
 GameObject:
   m_ObjectHideFlags: 0
