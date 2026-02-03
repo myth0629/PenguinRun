@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// 플레이어 체력 시스템
@@ -26,9 +27,28 @@ public class PlayerHealth : MonoBehaviour
     [Tooltip("무적 중 깜빡임 간격")]
     [SerializeField] private float blinkInterval = 0.1f;
 
+    [Header("=== 카메라 흔들림 (DOTween) ===")]
+    [Tooltip("흔들림 효과를 적용할 카메라 (비워두면 Main Camera)")]
+    [SerializeField] private Camera shakeCamera;
+    
+    [Tooltip("흔들림 지속 시간")]
+    [SerializeField] private float shakeDuration = 0.2f;
+    
+    [Tooltip("흔들림 강도")]
+    [SerializeField] private float shakeStrength = 0.3f;
+    
+    [Tooltip("흔들림 진동 횟수")]
+    [SerializeField] private int shakeVibrato = 10;
+    
+    [Tooltip("흔들림 랜덤도 (0~180)")]
+    [SerializeField] private float shakeRandomness = 90f;
+
     [Header("=== 참조 ===")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Collider2D bodyCollider;
+
+    private Animator anim;
+    private Vector3 originalCameraPosition;
 
     // 이벤트
     public event Action<int, int> OnHealthChanged;  // (현재체력, 최대체력)
@@ -50,6 +70,7 @@ public class PlayerHealth : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         bodyCollider = GetComponent<Collider2D>();
+        anim = GetComponent<Animator>();
     }
 
     private void Awake()
@@ -58,12 +79,23 @@ public class PlayerHealth : MonoBehaviour
             spriteRenderer = GetComponent<SpriteRenderer>();
         if (bodyCollider == null)
             bodyCollider = GetComponent<Collider2D>();
+        anim = GetComponent<Animator>();
     }
 
     private void Start()
     {
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        
+        // 카메라 원래 위치 저장
+        if (shakeCamera == null)
+        {
+            shakeCamera = Camera.main;
+        }
+        if (shakeCamera != null)
+        {
+            originalCameraPosition = shakeCamera.transform.position;
+        }
     }
 
     private void Update()
@@ -103,6 +135,9 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Max(0, currentHealth - damage);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnPlayerDamaged?.Invoke();
+        
+        // 카메라 흔들림 효과
+        ShakeCamera();
 
         if (currentHealth <= 0)
         {
@@ -111,7 +146,37 @@ public class PlayerHealth : MonoBehaviour
         else
         {
             StartInvincibility();
+            anim.SetTrigger("hurt");
         }
+    }
+
+    /// <summary>
+    /// DOTween을 사용한 카메라 흔들림 효과
+    /// </summary>
+    private void ShakeCamera()
+    {
+        if (shakeCamera == null)
+        {
+            shakeCamera = Camera.main;
+        }
+        
+        if (shakeCamera == null) return;
+
+        // 기존 흔들림 중지
+        shakeCamera.DOKill();
+        
+        // 카메라 위치 초기화 후 흔들림 적용
+        shakeCamera.transform.position = originalCameraPosition;
+        shakeCamera.DOShakePosition(
+            duration: shakeDuration,
+            strength: shakeStrength,
+            vibrato: shakeVibrato,
+            randomness: shakeRandomness,
+            fadeOut: true
+        ).OnComplete(() => {
+            // 흔들림 종료 후 원래 위치로 복귀
+            shakeCamera.transform.position = originalCameraPosition;
+        });
     }
 
     /// <summary>
@@ -149,6 +214,8 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("[PlayerHealth] 플레이어 사망!");
+        anim.SetTrigger("die");
+        Destroy(gameObject, 1.0f); // 사망 애니메이션 후 오브젝트 제거
         OnPlayerDeath?.Invoke();
         // 추가 사망 처리 (게임 오버 UI 등)
     }

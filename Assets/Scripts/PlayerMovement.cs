@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
     private static readonly int AnimIsSliding = Animator.StringToHash("isSliding");
     private static readonly int AnimIsFalling = Animator.StringToHash("isFalling");
+    private static readonly int AnimIsJumping = Animator.StringToHash("isJumping");
     private static readonly int AnimJump = Animator.StringToHash("jump");
     private static readonly int AnimSlide = Animator.StringToHash("slide");
 
@@ -188,6 +189,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool(AnimIsGrounded, isGrounded);
         animator.SetBool(AnimIsSliding, isSliding);
         animator.SetBool(AnimIsFalling, isFalling);
+        animator.SetBool(AnimIsJumping, isJumping);
     }
 
     private void UpdateFalling()

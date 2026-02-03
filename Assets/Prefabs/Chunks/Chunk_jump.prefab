@@ -1340,7 +1340,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 8
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -1397,7 +1397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5263118847793452302}
   - component: {fileID: 2176411810374178822}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1441,7 +1441,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3451146080323939407}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Chunk_jump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
