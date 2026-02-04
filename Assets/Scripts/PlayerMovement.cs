@@ -32,6 +32,10 @@ public class PlayerMovement : MonoBehaviour
     [Header("Slide")]
     [SerializeField] private float slideColliderHeight = 0.5f;
     [SerializeField] private Vector2 slideColliderOffset = new Vector2(0f, -0.25f);
+    
+    [Header("Slide Buffering (슬라이드 버퍼링)")]
+    [Tooltip("점프 중 슬라이드 입력을 저장하는 시간 (초)")]
+    [SerializeField] private float slideBufferTime = 0.2f;
 
     [Header("Fall")]
     [SerializeField] private float fallVelocityThreshold = -0.1f;
@@ -51,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
     // 코요테 타임 & 점프 버퍼링 타이머
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
+    private float slideBufferCounter;
     private bool wasGroundedLastFrame;
 
     private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
@@ -109,6 +114,7 @@ public class PlayerMovement : MonoBehaviour
         UpdateGrounded();
         UpdateCoyoteTime();
         UpdateJumpBuffer(jumpPressed);
+        UpdateSlideBuffer(slidePressed);
         HandleJumpInput(jumpPressed, jumpHeld);
         HandleSlideInput(slidePressed, slideHeld);
         UpdateFalling();
@@ -141,11 +147,32 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void UpdateSlideBuffer(bool slidePressed)
+    {
+        if (slidePressed)
+        {
+            slideBufferCounter = slideBufferTime;
+        }
+        else
+        {
+            slideBufferCounter -= Time.deltaTime;
+        }
+    }
+
     private void HandleJumpInput(bool jumpPressed, bool jumpHeld)
     {
+        // 슬라이드 중 점프 입력 -> 슬라이드 종료 후 점프 (선입력)
         if (isSliding)
         {
-            return;
+            if (jumpBufferCounter > 0f)
+            {
+                EndSlide();
+                // 점프 바로 실행
+            }
+            else
+            {
+                return;
+            }
         }
 
         // 점프 시작 (코요테 타임 + 점프 버퍼링 적용)
@@ -187,19 +214,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleSlideInput(bool slidePressed, bool slideHeld)
     {
+        // 슬라이드 중인데 키를 뗐으면 즉시 종료 (최우선)
+        if (isSliding && !slideHeld)
+        {
+            EndSlide();
+            slideBufferCounter = 0f; // 버퍼도 초기화
+            return;
+        }
+
+        // 공중에서는 버퍼만 저장하고 리턴
         if (!isGrounded)
         {
             return;
         }
 
-        if (!isSliding && slidePressed)
+        // 슬라이드 시작 조건: 버퍼에 입력이 있거나 지금 눌렀고, 키를 누르고 있어야 함
+        bool wantsSlide = (slideBufferCounter > 0f || slidePressed) && slideHeld;
+        
+        if (!isSliding && wantsSlide && !isJumping)
         {
             StartSlide();
-        }
-
-        if (isSliding && !slideHeld)
-        {
-            EndSlide();
+            slideBufferCounter = 0f; // 버퍼 소모
         }
     }
 

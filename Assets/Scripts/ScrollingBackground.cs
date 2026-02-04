@@ -201,7 +201,8 @@ public class ScrollingBackground : MonoBehaviour
         if (layers == null || layers.Length == 0) return;
         if (targetCamera == null) return;
 
-        float baseSpeed = useGameSpeedController && GameSpeedController.Speed > 0f 
+        // GameSpeedController가 설정되어 있으면 그 값 사용 (0 포함)
+        float baseSpeed = useGameSpeedController 
             ? GameSpeedController.Speed 
             : baseScrollSpeed;
 

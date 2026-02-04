@@ -2109,6 +2109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 938585018}
   - component: {fileID: 938585017}
+  - component: {fileID: 938585019}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -2144,6 +2145,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &938585019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938585014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b29872dbdb7de244895e20cc682564a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameStartSequence
+  player: {fileID: 1507545727}
+  targetPosition: {fileID: 831254182}
+  startOffsetX: -8
+  entranceDuration: 1
+  delayBeforeStart: 0
+  entranceEase: 1
+  targetGameSpeed: 6.5
+  speedRampDuration: 0.5
+  playerMovement: {fileID: 1507545730}
+  playerAnimator: {fileID: 1507545726}
+  autoStartOnAwake: 1
 --- !u!1 &1250365012
 GameObject:
   m_ObjectHideFlags: 0
@@ -2448,6 +2472,14 @@ MonoBehaviour:
     weight: 0
     minDifficultyLevel: 1
     description: 
+  - prefab: {fileID: 6088540337620522195, guid: b3109f7a7c85eaa4fb50a85fdc56479d, type: 3}
+    weight: 0
+    minDifficultyLevel: 1
+    description: 
+  - prefab: {fileID: 3389544278606637253, guid: 4d43fa408a2d9274e8211dec3ceaf87b, type: 3}
+    weight: 0
+    minDifficultyLevel: 1
+    description: 
   chunkWidth: 36
   activeChunkCount: 3
   spawnY: 0
@@ -2611,6 +2643,7 @@ MonoBehaviour:
   jumpBufferTime: 0.1
   slideColliderHeight: 0.5
   slideColliderOffset: {x: 0, y: -0.25}
+  slideBufferTime: 0.2
   fallVelocityThreshold: -0.1
   jumpAction: {fileID: 884423241}
   slideAction: {fileID: 276762157}

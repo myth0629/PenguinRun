@@ -221,7 +221,8 @@ public class ScrollingTileFloor : MonoBehaviour
 
     private float GetCurrentSpeed()
     {
-        float baseSpeed = GameSpeedController.Speed > 0f ? GameSpeedController.Speed : baseScrollSpeed;
+        // GameSpeedController가 설정되어 있으면 그 값 사용 (0 포함)
+        float baseSpeed = GameSpeedController.Speed >= 0f ? GameSpeedController.Speed : baseScrollSpeed;
         return baseSpeed * speedMultiplier;
     }
     #endregion
