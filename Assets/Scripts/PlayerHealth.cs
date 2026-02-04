@@ -47,6 +47,10 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Collider2D bodyCollider;
 
+    [Header("=== 디버그 ===")]
+    [Tooltip("무적 모드 (피격 효과만 발생, 체력 미감소)")]
+    [SerializeField] private bool godMode = false;
+
     private Animator anim;
     private Vector3 originalCameraPosition;
 
@@ -65,6 +69,7 @@ public class PlayerHealth : MonoBehaviour
     public int MaxHealth => maxHealth;
     public bool IsInvincible => isInvincible;
     public bool IsDead => currentHealth <= 0;
+    public bool IsGodMode => godMode;
 
     private void Reset()
     {
@@ -131,6 +136,17 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isInvincible || IsDead) return;
         if (damage <= 0) return;
+
+        // 디버그 무적 모드: 피격 효과만 발생
+        if (godMode)
+        {
+            OnPlayerDamaged?.Invoke();
+            ShakeCamera();
+            StartInvincibility();
+            if (anim != null) anim.SetTrigger("hurt");
+            Debug.Log("[PlayerHealth] God Mode: 데미지 무시됨");
+            return;
+        }
 
         currentHealth = Mathf.Max(0, currentHealth - damage);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);

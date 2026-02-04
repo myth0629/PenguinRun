@@ -21,6 +21,14 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("점프 컷이 적용되는 최소 상승 속도")]
     [SerializeField] private float minJumpCutVelocity = 0.1f;
 
+    [Header("Coyote Time (코요테 타임)")]
+    [Tooltip("플랫폼에서 떨어진 후에도 점프 가능한 시간 (초)")]
+    [SerializeField] private float coyoteTime = 0.15f;
+    
+    [Header("Jump Buffering (점프 버퍼링)")]
+    [Tooltip("착지 직전 점프 입력을 저장하는 시간 (초)")]
+    [SerializeField] private float jumpBufferTime = 0.1f;
+
     [Header("Slide")]
     [SerializeField] private float slideColliderHeight = 0.5f;
     [SerializeField] private Vector2 slideColliderOffset = new Vector2(0f, -0.25f);
@@ -39,6 +47,11 @@ public class PlayerMovement : MonoBehaviour
     private bool isFalling;
     private bool isJumping;
     private bool jumpReleased;
+    
+    // 코요테 타임 & 점프 버퍼링 타이머
+    private float coyoteTimeCounter;
+    private float jumpBufferCounter;
+    private bool wasGroundedLastFrame;
 
     private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
     private static readonly int AnimIsSliding = Animator.StringToHash("isSliding");
@@ -94,10 +107,38 @@ public class PlayerMovement : MonoBehaviour
         bool slideHeld = slideAction != null && slideAction.action.IsPressed();
 
         UpdateGrounded();
+        UpdateCoyoteTime();
+        UpdateJumpBuffer(jumpPressed);
         HandleJumpInput(jumpPressed, jumpHeld);
         HandleSlideInput(slidePressed, slideHeld);
         UpdateFalling();
         UpdateAnimator();
+    }
+
+    private void UpdateCoyoteTime()
+    {
+        if (isGrounded)
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+        
+        wasGroundedLastFrame = isGrounded;
+    }
+
+    private void UpdateJumpBuffer(bool jumpPressed)
+    {
+        if (jumpPressed)
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
     }
 
     private void HandleJumpInput(bool jumpPressed, bool jumpHeld)
@@ -107,14 +148,21 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // 점프 시작
-        if (isGrounded && jumpPressed)
+        // 점프 시작 (코요테 타임 + 점프 버퍼링 적용)
+        bool canJump = coyoteTimeCounter > 0f && !isJumping;
+        bool wantsJump = jumpBufferCounter > 0f;
+        
+        if (canJump && wantsJump)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             animator.SetTrigger(AnimJump);
             isJumping = true;
             jumpReleased = false;
+            
+            // 타이머 초기화 (더블 점프 방지)
+            coyoteTimeCounter = 0f;
+            jumpBufferCounter = 0f;
         }
 
         // 점프 중 버튼을 떼면 상승 속도 감소 (가변 점프)
