@@ -51,6 +51,12 @@ public class ScrollingTileFloor : MonoBehaviour
     
     [Header("=== 디버그 ===")]
     [SerializeField] private bool showDebugGizmos = false;
+    [Header("=== 오브젝트 풀링 ===")]
+    [Tooltip("오브젝트 풀링 사용 여부")]
+    [SerializeField] private bool useObjectPooling = true;
+    
+    [Tooltip("각 프리팹당 미리 생성할 개수")]
+    [SerializeField] private int preloadCountPerPrefab = 3;
     #endregion
 
     #region Runtime Variables
@@ -61,6 +67,7 @@ public class ScrollingTileFloor : MonoBehaviour
     private float rightSpawnPoint;
     private float playTime;
     private int currentDifficultyLevel;
+    private bool poolInitialized;
     #endregion
 
     #region Data Classes
@@ -105,6 +112,7 @@ public class ScrollingTileFloor : MonoBehaviour
     private void Start()
     {
         ValidateSetup();
+        InitializeObjectPool();
         InitializeChunks();
     }
 
@@ -164,6 +172,22 @@ public class ScrollingTileFloor : MonoBehaviour
             leftBoundary = -chunkWidth * 2f;
             rightSpawnPoint = chunkWidth;
         }
+    }
+
+    private void InitializeObjectPool()
+    {
+        if (!useObjectPooling || poolInitialized) return;
+        
+        foreach (var chunkData in chunkPatterns)
+        {
+            if (chunkData.prefab != null)
+            {
+                ObjectPool.Instance.InitializePool(chunkData.prefab, preloadCountPerPrefab);
+            }
+        }
+        
+        poolInitialized = true;
+        Debug.Log("[ScrollingTileFloor] 오브젝트 풀 초기화 완료");
     }
 
     private void InitializeChunks()
@@ -227,10 +251,17 @@ public class ScrollingTileFloor : MonoBehaviour
 
     private void RecycleChunk(ChunkInstance oldChunk, int listIndex)
     {
-        // 기존 청크 제거
+        // 기존 청크를 풀에 반환 또는 제거
         if (oldChunk.gameObject != null)
         {
-            Destroy(oldChunk.gameObject);
+            if (useObjectPooling)
+            {
+                ObjectPool.Instance.Return(oldChunk.gameObject);
+            }
+            else
+            {
+                Destroy(oldChunk.gameObject);
+            }
         }
         activeChunks.RemoveAt(listIndex);
 
@@ -267,7 +298,16 @@ public class ScrollingTileFloor : MonoBehaviour
         }
 
         Vector3 spawnPos = new Vector3(xPosition, spawnY, 0f);
-        GameObject newChunk = Instantiate(chunkPatterns[patternIndex].prefab, spawnPos, Quaternion.identity, transform);
+        GameObject newChunk;
+        
+        if (useObjectPooling)
+        {
+            newChunk = ObjectPool.Instance.Get(chunkPatterns[patternIndex].prefab, spawnPos, Quaternion.identity, transform);
+        }
+        else
+        {
+            newChunk = Instantiate(chunkPatterns[patternIndex].prefab, spawnPos, Quaternion.identity, transform);
+        }
         
         ChunkInstance instance = new ChunkInstance(newChunk, patternIndex);
         activeChunks.Add(instance);
@@ -421,7 +461,14 @@ public class ScrollingTileFloor : MonoBehaviour
         {
             if (activeChunks[i].gameObject != null)
             {
-                Destroy(activeChunks[i].gameObject);
+                if (useObjectPooling)
+                {
+                    ObjectPool.Instance.Return(activeChunks[i].gameObject);
+                }
+                else
+                {
+                    Destroy(activeChunks[i].gameObject);
+                }
             }
         }
         activeChunks.Clear();
