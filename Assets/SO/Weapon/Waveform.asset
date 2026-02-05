@@ -21,20 +21,20 @@ MonoBehaviour:
     cooldown: 5
     speed: 8
     projectileCount: 1
-    sizeMultiplier: 2
+    sizeMultiplier: 3
     pierceCount: 0
-    description: 
+    description: projectile missile
   - damage: 7
-    cooldown: 4.5
+    cooldown: 5
+    speed: 8
+    projectileCount: 1
+    sizeMultiplier: 3
+    pierceCount: 0
+    description: 'damage : 5 -> 7'
+  - damage: 7
+    cooldown: 5
     speed: 8
     projectileCount: 2
-    sizeMultiplier: 2
+    sizeMultiplier: 3
     pierceCount: 0
-    description: 
-  - damage: 9
-    cooldown: 4
-    speed: 8
-    projectileCount: 3
-    sizeMultiplier: 2
-    pierceCount: 0
-    description: 
+    description: 'Projectile Count : 1 -> 2'

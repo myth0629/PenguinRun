@@ -808,6 +808,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon Slot 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5361901602055574064, guid: 33e7b9c5e62bea54eb7d116fcf0c098e, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2372,8 +2376,11 @@ MonoBehaviour:
   spawnPool:
   - enemyPrefab: {fileID: 7216914475184290759, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
     enemyData: {fileID: 11400000, guid: e3db7c4197043b843b92f8228347b98b, type: 2}
-    spawnWeight: 0
-  spawnCooldown: 10
+    spawnWeight: 50
+  - enemyPrefab: {fileID: 3507619408892115172, guid: 417b24ed4ea22c347b9c2accce3aba08, type: 3}
+    enemyData: {fileID: 11400000, guid: 417b14b48ca885544abdfd99b16cab2a, type: 2}
+    spawnWeight: 50
+  spawnCooldown: 5
   spawnOffsetX: 2
   groundSpawnY: -2
   flyingSpawnYRange: {x: -5, y: 5}
@@ -2917,7 +2924,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLevel
   startLevel: 1
   maxLevel: 99
-  baseExpRequired: 100
+  baseExpRequired: 200
   expGrowthRate: 1.2
   carryOverExp: 1
   currentLevel: 0
@@ -2939,6 +2946,7 @@ MonoBehaviour:
   allWeapons:
   - {fileID: 11400000, guid: d2da0fcfb9536244c9ece0082eaea360, type: 2}
   - {fileID: 11400000, guid: 5f676a21889c0d040a76b045ab3c8d57, type: 2}
+  - {fileID: 11400000, guid: b51094c849c39c64e839ac9546b1b87f, type: 2}
   maxWeaponSlots: 6
 --- !u!1001 &1552196651
 PrefabInstance:
@@ -3031,6 +3039,10 @@ PrefabInstance:
     - target: {fileID: 4673591873547099384, guid: 33e7b9c5e62bea54eb7d116fcf0c098e, type: 3}
       propertyPath: m_Name
       value: Weapon Slot 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5361901602055574064, guid: 33e7b9c5e62bea54eb7d116fcf0c098e, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3719,6 +3731,10 @@ PrefabInstance:
     - target: {fileID: 4673591873547099384, guid: 33e7b9c5e62bea54eb7d116fcf0c098e, type: 3}
       propertyPath: m_Name
       value: Weapon Slot 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5361901602055574064, guid: 33e7b9c5e62bea54eb7d116fcf0c098e, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

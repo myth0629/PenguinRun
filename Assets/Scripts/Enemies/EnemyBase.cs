@@ -130,7 +130,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
         if (spriteRenderer != null)
         {
-            spriteRenderer.color = Color.red;
+            //spriteRenderer.color = Color.red;
             yield return new WaitForSeconds(0.1f);
             spriteRenderer.color = Color.white;
         }

@@ -23,18 +23,18 @@ MonoBehaviour:
     projectileCount: 1
     sizeMultiplier: 4
     pierceCount: 0
-    description: 
+    description: strong shot
   - damage: 13
-    cooldown: 2.5
+    cooldown: 3
     speed: 15
     projectileCount: 1
     sizeMultiplier: 4
     pierceCount: 0
-    description: 
+    description: 'damage : 10 -> 13'
   - damage: 16
-    cooldown: 2
+    cooldown: 3
     speed: 15
     projectileCount: 1
     sizeMultiplier: 4
     pierceCount: 0
-    description: 
+    description: 'damage : 13 -> 16'

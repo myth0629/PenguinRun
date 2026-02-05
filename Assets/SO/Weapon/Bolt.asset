@@ -30,11 +30,15 @@ MonoBehaviour:
     projectileCount: 1
     sizeMultiplier: 2
     pierceCount: 0
-    description: 
+    description: 'damage : 3 -> 5
+
+      cooldown : 0.5 -> 0.4'
   - damage: 7
     cooldown: 0.3
     speed: 10
     projectileCount: 1
     sizeMultiplier: 2
     pierceCount: 1
-    description: 
+    description: 'damage : 5 -> 7
+
+      cooldown : 0.4 -> 0.3'
