@@ -110,6 +110,7 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 256
+  hitEffectPrefab: {fileID: 2379120426085018283, guid: 6286f6de41b397b40bacae87cc556954, type: 3}
   homingStrength: 5
   detectionRadius: 10
   homingDelay: 0.1

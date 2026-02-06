@@ -10,6 +10,10 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float lifetime = 5f;
     [SerializeField] private LayerMask targetLayer;
     [SerializeField] private string targetTag = "Enemy";
+    
+    [Header("=== 히트 이펙트 ===")]
+    [Tooltip("명중 시 생성할 히트 이펙트 프리팹")]
+    [SerializeField] private GameObject hitEffectPrefab;
 
     [Header("=== 현재 상태 (런타임) ===")]
     [SerializeField] private float damage;
@@ -83,6 +87,9 @@ public class Projectile : MonoBehaviour
         if (damageable != null)
         {
             damageable.TakeDamage(damage);
+            
+            // 히트 이펙트 생성
+            SpawnHitEffect(other.transform.position);
         }
 
         // 관통 처리
@@ -91,6 +98,28 @@ public class Projectile : MonoBehaviour
         {
             ReturnToPool();
         }
+    }
+
+    /// <summary>
+    /// 히트 이펙트 생성
+    /// </summary>
+    private void SpawnHitEffect(Vector3 position)
+    {
+        if (hitEffectPrefab == null) return;
+        
+        ObjectPool.Instance.Get(hitEffectPrefab, position, Quaternion.identity);
+        // if (effect != null)
+        // {
+        //     HitEffect hitEffect = effect.GetComponent<HitEffect>();
+        //     if (hitEffect != null)
+        //     {
+        //         hitEffect.Initialize(position);
+        //     }
+        //     else
+        //     {
+        //         effect.transform.position = position;
+        //     }
+        // }
     }
 
     private void ReturnToPool()

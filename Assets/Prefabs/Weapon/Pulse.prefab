@@ -32,6 +32,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.01
       objectReference: {fileID: 0}
+    - target: {fileID: 9038763380514202770, guid: cdf14b6280aa14346a6c2146f96dfca0, type: 3}
+      propertyPath: hitEffectPrefab
+      value: 
+      objectReference: {fileID: 5651240078808758610, guid: 8720ca9a9c0964e4aaad327310e110e0, type: 3}
     - target: {fileID: 9069928909124090182, guid: cdf14b6280aa14346a6c2146f96dfca0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

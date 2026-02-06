@@ -348,20 +348,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &276762157
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Player/Slide
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  m_ActionId: d4587741-7a5f-45f1-8a80-45217d78f451
 --- !u!1 &309921950
 GameObject:
   m_ObjectHideFlags: 0
@@ -2202,20 +2188,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &884423241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: Player/Jump
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  m_ActionId: f1ba0d36-48eb-4cd5-b651-1c94a6531f70
 --- !u!1 &924632222
 GameObject:
   m_ObjectHideFlags: 0
@@ -2376,10 +2348,13 @@ MonoBehaviour:
   spawnPool:
   - enemyPrefab: {fileID: 7216914475184290759, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
     enemyData: {fileID: 11400000, guid: e3db7c4197043b843b92f8228347b98b, type: 2}
-    spawnWeight: 50
+    spawnWeight: 40
   - enemyPrefab: {fileID: 3507619408892115172, guid: 417b24ed4ea22c347b9c2accce3aba08, type: 3}
     enemyData: {fileID: 11400000, guid: 417b14b48ca885544abdfd99b16cab2a, type: 2}
-    spawnWeight: 50
+    spawnWeight: 40
+  - enemyPrefab: {fileID: 5370112242168248129, guid: 525fd5f166781a9438fe9ec357bd6242, type: 3}
+    enemyData: {fileID: 11400000, guid: 2356e14b8116bac4d86654e63c2bae85, type: 2}
+    spawnWeight: 20
   spawnCooldown: 5
   spawnOffsetX: 2
   groundSpawnY: -2
@@ -2881,8 +2856,8 @@ MonoBehaviour:
   slideColliderOffset: {x: 0, y: -0.25}
   slideBufferTime: 0.2
   fallVelocityThreshold: -0.1
-  jumpAction: {fileID: 884423241}
-  slideAction: {fileID: 276762157}
+  jumpAction: {fileID: 0}
+  slideAction: {fileID: 0}
 --- !u!114 &1507545731
 MonoBehaviour:
   m_ObjectHideFlags: 0

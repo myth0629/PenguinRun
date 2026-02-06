@@ -11,6 +11,10 @@ public class HomingProjectile : MonoBehaviour
     [SerializeField] private float lifetime = 5f;
     [SerializeField] private string targetTag = "Enemy";
     [SerializeField] private LayerMask targetLayer;
+    
+    [Header("=== 히트 이펙트 ===")]
+    [Tooltip("명중 시 생성할 히트 이펙트 프리팹")]
+    [SerializeField] private GameObject hitEffectPrefab;
 
     [Header("=== 유도 설정 ===")]
     [Tooltip("유도 강도 (높을수록 빠르게 방향 전환)")]
@@ -178,6 +182,9 @@ public class HomingProjectile : MonoBehaviour
         if (damageable != null)
         {
             damageable.TakeDamage(damage);
+            
+            // 히트 이펙트 생성
+            SpawnHitEffect(other.transform.position);
         }
 
         // 타겟 갱신 (맞은 적 제외)
@@ -192,6 +199,16 @@ public class HomingProjectile : MonoBehaviour
         {
             ReturnToPool();
         }
+    }
+
+    /// <summary>
+    /// 히트 이펙트 생성
+    /// </summary>
+    private void SpawnHitEffect(Vector3 position)
+    {
+        if (hitEffectPrefab == null) return;
+        
+        ObjectPool.Instance.Get(hitEffectPrefab, position, Quaternion.identity);
     }
 
     private void ReturnToPool()
