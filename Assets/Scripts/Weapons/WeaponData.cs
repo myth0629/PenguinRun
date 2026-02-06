@@ -17,6 +17,13 @@ public class WeaponData : ScriptableObject
 
     [Header("=== 투사체 ===")]
     public GameObject projectilePrefab;
+    
+    [Header("=== 발사 패턴 ===")]
+    [Tooltip("부채꼴(샷건) 발사 사용 여부")]
+    public bool useSpreadFire = false;
+    
+    [Tooltip("총 퍼짐 각도 (예: 60도면 -30~+30 범위로 발사)")]
+    public float spreadAngle = 60f;
 
     [Header("=== 레벨별 데이터 ===")]
     public List<LevelData> levelUpstream;

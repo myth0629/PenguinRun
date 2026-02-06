@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86764fa781ddb7b4a92affcb9a0aee39, type: 3}
+  m_Name: Spark
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponName: Spark
+  weaponIcon: {fileID: 21300000, guid: cf9760a2dafc94f97b705a62ec67e9ff, type: 3}
+  weaponDescription: shotgun style
+  projectilePrefab: {fileID: 7607921170863307016, guid: 519af731d40563c4ebe5d21f378a6234, type: 3}
+  useSpreadFire: 1
+  spreadAngle: 60
+  levelUpstream:
+  - damage: 4
+    cooldown: 1.5
+    speed: 12
+    projectileCount: 3
+    sizeMultiplier: 2
+    pierceCount: 0
+    description: 
+  - damage: 5
+    cooldown: 1.5
+    speed: 12
+    projectileCount: 4
+    sizeMultiplier: 2
+    pierceCount: 0
+    description: 'damage : 4 -> 5
+
+      Projectile Count : 3 -> 4'
+  - damage: 5
+    cooldown: 1.5
+    speed: 12
+    projectileCount: 5
+    sizeMultiplier: 2
+    pierceCount: 0
+    description: 'Projectile Count : 4 -> 5'

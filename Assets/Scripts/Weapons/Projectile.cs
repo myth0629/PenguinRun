@@ -108,18 +108,6 @@ public class Projectile : MonoBehaviour
         if (hitEffectPrefab == null) return;
         
         ObjectPool.Instance.Get(hitEffectPrefab, position, Quaternion.identity);
-        // if (effect != null)
-        // {
-        //     HitEffect hitEffect = effect.GetComponent<HitEffect>();
-        //     if (hitEffect != null)
-        //     {
-        //         hitEffect.Initialize(position);
-        //     }
-        //     else
-        //     {
-        //         effect.transform.position = position;
-        //     }
-        // }
     }
 
     private void ReturnToPool()

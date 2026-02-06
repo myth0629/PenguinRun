@@ -74,17 +74,27 @@ public class Weapon : MonoBehaviour
         // 기본: 오른쪽으로 발사 (러너 게임 특성)
         Vector3 spawnPos = owner != null ? owner.position : transform.position;
         
-        // 여러 개일 경우 부채꼴로 발사
-        float spreadAngle = 15f; // 투사체 간 각도
-        float baseAngle = 0f; // 기본 방향 (오른쪽)
+        float angle = 0f;
         
-        if (totalCount > 1)
+        // 부채꼴(샷건) 발사
+        if (weaponData.useSpreadFire && totalCount > 1)
         {
+            // 총 퍼짐 각도를 탄 수-1로 나눠서 균등 분배
+            // 예: 60도, 3발 → -30, 0, +30
+            // 예: 60도, 6발 → -30, -18, -6, +6, +18, +30
+            float halfSpread = weaponData.spreadAngle / 2f;
+            float step = weaponData.spreadAngle / (totalCount - 1);
+            angle = -halfSpread + (step * index);
+        }
+        else if (totalCount > 1)
+        {
+            // 기존 방식: 고정 간격
+            float spreadAngle = 15f;
             float totalSpread = spreadAngle * (totalCount - 1);
-            baseAngle = -totalSpread / 2f + (spreadAngle * index);
+            angle = -totalSpread / 2f + (spreadAngle * index);
         }
 
-        Quaternion rotation = Quaternion.Euler(0f, 0f, baseAngle);
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
 
         // 풀링 사용
         GameObject projectileObj = ObjectPool.Instance.Get(
