@@ -18,6 +18,9 @@ MonoBehaviour:
   maxHealth: 10
   moveSpeed: 2
   damage: 1
-  expReward: 5
+  attackCooldown: 2
+  projectileDamage: 1
+  projectileSpeed: 5
+  expReward: 10
   deathEffect: {fileID: 0}
   deathSound: {fileID: 0}

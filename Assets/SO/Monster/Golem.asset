@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf94989d6b157e4a837f0c9d6a4ebeb, type: 3}
   m_Name: Golem
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Dark Monster
-  enemySprite: {fileID: 2260025004878916334, guid: f38df5b66832c5f4ca15533637906356, type: 3}
-  enemyType: 1
-  maxHealth: 10
-  moveSpeed: 3
+  enemyName: Golem
+  enemySprite: {fileID: -7398631298556252749, guid: fcbf5e0b9ac2f4d43add11a325a036a2, type: 3}
+  enemyType: 2
+  maxHealth: 100
+  moveSpeed: 2
   damage: 1
-  expReward: 5
+  attackCooldown: 2
+  projectileDamage: 1
+  projectileSpeed: 5
+  expReward: 50
   deathEffect: {fileID: 0}
   deathSound: {fileID: 0}

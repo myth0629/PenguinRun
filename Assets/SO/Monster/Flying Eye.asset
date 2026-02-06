@@ -15,9 +15,12 @@ MonoBehaviour:
   enemyName: Flying Eye
   enemySprite: {fileID: -4795363162621231457, guid: 8a74ae905fdf3a44ab07636d7cf9c4b4, type: 3}
   enemyType: 1
-  maxHealth: 10
+  maxHealth: 20
   moveSpeed: 2
   damage: 1
-  expReward: 5
+  attackCooldown: 2
+  projectileDamage: 1
+  projectileSpeed: 5
+  expReward: 15
   deathEffect: {fileID: 0}
   deathSound: {fileID: 0}

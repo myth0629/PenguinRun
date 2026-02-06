@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3537018231340574789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3937175836170625024}
+  m_Layer: 8
+  m_Name: Hand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3937175836170625024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3537018231340574789}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.301, y: -0.018, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9144162410260404620}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3360206334398155910
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11,7 +42,7 @@ PrefabInstance:
     - target: {fileID: 1349258212077368553, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 6286992587047916036, guid: 4cd390d977858d6419cd283911046cda, type: 3}
+      objectReference: {fileID: 9100000, guid: f1167b53cf1d6104b94fd7a24423bed8, type: 2}
     - target: {fileID: 4261279790695473829, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
       propertyPath: enemyData
       value: 
@@ -26,11 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5784678661355263242, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.3595595
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5784678661355263242, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.9003307
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5784678661355263242, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
       propertyPath: m_LocalPosition.z
@@ -65,6 +96,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6100558606374020395, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100558606374020395, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
       propertyPath: m_Size.x
       value: 0.48
       objectReference: {fileID: 0}
@@ -88,8 +123,51 @@ PrefabInstance:
       propertyPath: m_Name
       value: Golem
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4261279790695473829, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5784678661355263242, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3937175836170625024}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7216914475184290759, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2740273005371733666}
   m_SourcePrefab: {fileID: 100100000, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
+--- !u!1 &5370112242168248129 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7216914475184290759, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
+  m_PrefabInstance: {fileID: 3360206334398155910}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-2740273005371733666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5370112242168248129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f1bdfeb708b7aa479eed455b4eb0a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossEnemy
+  enemyData: {fileID: 11400000, guid: 2356e14b8116bac4d86654e63c2bae85, type: 2}
+  target: {fileID: 0}
+  playerTag: Player
+  currentHealth: 0
+  targetXPosition: 6
+  yMoveRange: {x: -2, y: 2}
+  yMoveSpeed: 2
+  projectilePrefab: {fileID: 0}
+  fireOffset: {x: -0.5, y: 0}
+  useEnergyWave: 1
+  energyWaveCooldown: 2
+  energyWavePrefab: {fileID: 600640488034149684, guid: 91163a6dc06559d4695c2f7bc798e5b9, type: 3}
+  energyWaveSpawnPoint: {fileID: 3937175836170625024}
+  energyWaveOffset: {x: -10, y: 0}
+--- !u!4 &9144162410260404620 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5784678661355263242, guid: 2ff0b4e5582e1b64f9cf1559100fde43, type: 3}
+  m_PrefabInstance: {fileID: 3360206334398155910}
+  m_PrefabAsset: {fileID: 0}

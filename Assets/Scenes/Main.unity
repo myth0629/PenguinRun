@@ -358,7 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 309921951}
   - component: {fileID: 309921952}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: male_hero-idle_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -447,7 +447,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 376578697}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ground Check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -973,6 +973,20 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &554974767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Player/Slide
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_ActionId: d4587741-7a5f-45f1-8a80-45217d78f451
 --- !u!1 &587283272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,7 +1083,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 000000006dc4676b
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -2351,10 +2365,10 @@ MonoBehaviour:
     spawnWeight: 40
   - enemyPrefab: {fileID: 3507619408892115172, guid: 417b24ed4ea22c347b9c2accce3aba08, type: 3}
     enemyData: {fileID: 11400000, guid: 417b14b48ca885544abdfd99b16cab2a, type: 2}
-    spawnWeight: 40
+    spawnWeight: 50
   - enemyPrefab: {fileID: 5370112242168248129, guid: 525fd5f166781a9438fe9ec357bd6242, type: 3}
     enemyData: {fileID: 11400000, guid: 2356e14b8116bac4d86654e63c2bae85, type: 2}
-    spawnWeight: 20
+    spawnWeight: 10
   spawnCooldown: 5
   spawnOffsetX: 2
   groundSpawnY: -2
@@ -2717,7 +2731,7 @@ GameObject:
   - component: {fileID: 1507545728}
   - component: {fileID: 1507545732}
   - component: {fileID: 1507545733}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -2856,8 +2870,8 @@ MonoBehaviour:
   slideColliderOffset: {x: 0, y: -0.25}
   slideBufferTime: 0.2
   fallVelocityThreshold: -0.1
-  jumpAction: {fileID: 0}
-  slideAction: {fileID: 0}
+  jumpAction: {fileID: 2040691014}
+  slideAction: {fileID: 554974767}
 --- !u!114 &1507545731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3525,6 +3539,20 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &2040691014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Player/Jump
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_ActionId: f1ba0d36-48eb-4cd5-b651-1c94a6531f70
 --- !u!1 &2077637855
 GameObject:
   m_ObjectHideFlags: 0
